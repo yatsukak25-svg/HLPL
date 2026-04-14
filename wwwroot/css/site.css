@@ -1,0 +1,98 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+  background:
+    linear-gradient(180deg, rgba(16, 20, 33, 0.62), rgba(16, 20, 33, 0.74)),
+    url('/images/cinema-bg.svg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  color: #f7f7fb;
+  line-height: 1.55;
+}
+
+.site-navbar {
+  background: rgba(10, 10, 16, 0.72) !important;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(245, 196, 102, 0.28) !important;
+}
+
+.site-navbar .navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.04rem;
+  color: #f5c466 !important;
+}
+
+.site-navbar .nav-link {
+  color: #f3f2fa !important;
+}
+
+.site-navbar .nav-link:hover {
+  color: #ffd88a !important;
+}
+
+main[role='main'] {
+  border-radius: 18px;
+}
+
+a {
+  color: #8b2e12;
+}
+
+a:hover {
+  color: #6f240d;
+}
+
+.site-footer {
+  background: rgba(10, 10, 16, 0.82) !important;
+  color: #d5d3e5 !important;
+  border-top: 1px solid rgba(245, 196, 102, 0.18) !important;
+}
+
+/* Keep text readable inside white/light surfaces */
+.movie-card,
+.service-card,
+.contact-box,
+.filter-card,
+.session-card,
+.empty-state,
+.price-card,
+.table,
+.form-select,
+.form-control {
+  color: #1f1c32;
+}
+
+.movie-card h1, .movie-card h2, .movie-card h3, .movie-card h4, .movie-card h5, .movie-card h6,
+.service-card h1, .service-card h2, .service-card h3, .service-card h4, .service-card h5, .service-card h6,
+.contact-box h1, .contact-box h2, .contact-box h3, .contact-box h4, .contact-box h5, .contact-box h6 {
+  color: #19162a;
+}
+
+.note,
+.movie-meta,
+.session-meta {
+  color: #5d6177;
+}
+
+.text-readable-dark {
+  color: #172033 !important;
+}

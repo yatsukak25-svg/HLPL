@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0f1f"/>
+      <stop offset="1" stop-color="#1f2d4d"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="600" fill="url(#bg)"/>
+  <ellipse cx="210" cy="300" rx="140" ry="70" fill="none" stroke="#7fd0ff" stroke-width="3" opacity="0.6"/>
+  <ellipse cx="210" cy="300" rx="90" ry="45" fill="none" stroke="#ffd46b" stroke-width="2" opacity="0.6"/>
+  <circle cx="210" cy="300" r="34" fill="#e9f2ff"/>
+  <circle cx="290" cy="220" r="4" fill="#ffffff"/>
+  <circle cx="120" cy="180" r="3" fill="#ffffff"/>
+  <circle cx="70" cy="420" r="2" fill="#ffffff"/>
+  <text x="30" y="520" fill="#e8f5ff" font-family="Bebas Neue, sans-serif" font-size="36" letter-spacing="3">SILENT ORBIT</text>
+  <text x="30" y="552" fill="#b5c7e3" font-family="Cormorant Garamond, serif" font-size="18">Трилер</text>
+</svg>

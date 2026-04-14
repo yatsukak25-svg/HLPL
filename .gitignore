@@ -1,0 +1,11 @@
+.vs/
+bin/
+obj/
+
+*.user
+*.suo
+
+run-ok.log
+run-ok.err
+run-test.log
+run-test.err
