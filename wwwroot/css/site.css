@@ -1,98 +1,101 @@
-html {
-  font-size: 14px;
-}
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap');
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+:root {
+    --ink: #10243e;
+    --soft: #f4efe7;
+    --paper: #fffdf8;
+    --accent: #d66b36;
+    --accent-dark: #b65220;
+    --mint: #dcefeb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    font-size: 14px;
 }
 
 body {
-  margin-bottom: 60px;
-  background:
-    linear-gradient(180deg, rgba(16, 20, 33, 0.62), rgba(16, 20, 33, 0.74)),
-    url('/images/cinema-bg.svg');
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
-  color: #f7f7fb;
-  line-height: 1.55;
+    font-family: "Manrope", sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at top left, rgba(214, 107, 54, 0.12), transparent 28%),
+        linear-gradient(180deg, #fbf6ef 0%, #f3f1eb 100%);
 }
 
-.site-navbar {
-  background: rgba(10, 10, 16, 0.72) !important;
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(245, 196, 102, 0.28) !important;
+.bg-soft {
+    background-color: var(--soft);
 }
 
-.site-navbar .navbar-brand {
-  font-weight: 700;
-  letter-spacing: 0.04rem;
-  color: #f5c466 !important;
+.hero-nav {
+    background: linear-gradient(120deg, #17304a, #31506b);
 }
 
-.site-navbar .nav-link {
-  color: #f3f2fa !important;
+.hero-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(237, 246, 244, 0.95));
+    border-radius: 28px;
+    box-shadow: 0 24px 60px rgba(16, 36, 62, 0.12);
 }
 
-.site-navbar .nav-link:hover {
-  color: #ffd88a !important;
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
 }
 
-main[role='main'] {
-  border-radius: 18px;
+.stat-card,
+.dashboard-tile {
+    background: var(--paper);
+    border-radius: 20px;
+    padding: 1rem 1.1rem;
+    box-shadow: 0 10px 30px rgba(16, 36, 62, 0.08);
 }
 
-a {
-  color: #8b2e12;
+.stat-label {
+    font-size: 0.85rem;
+    color: #61728a;
 }
 
-a:hover {
-  color: #6f240d;
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
 }
 
-.site-footer {
-  background: rgba(10, 10, 16, 0.82) !important;
-  color: #d5d3e5 !important;
-  border-top: 1px solid rgba(245, 196, 102, 0.18) !important;
+.dashboard-tile strong {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 1.35rem;
 }
 
-/* Keep text readable inside white/light surfaces */
-.movie-card,
-.service-card,
-.contact-box,
-.filter-card,
-.session-card,
-.empty-state,
-.price-card,
+.btn-primary {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--accent-dark);
+    border-color: var(--accent-dark);
+}
+
 .table,
-.form-select,
-.form-control {
-  color: #1f1c32;
+.card,
+.form-control,
+.form-select {
+    border-radius: 16px;
 }
 
-.movie-card h1, .movie-card h2, .movie-card h3, .movie-card h4, .movie-card h5, .movie-card h6,
-.service-card h1, .service-card h2, .service-card h3, .service-card h4, .service-card h5, .service-card h6,
-.contact-box h1, .contact-box h2, .contact-box h3, .contact-box h4, .contact-box h5, .contact-box h6 {
-  color: #19162a;
+.table thead th {
+    color: #63758d;
+    font-weight: 700;
 }
 
-.note,
-.movie-meta,
-.session-meta {
-  color: #5d6177;
+.summary-bar {
+    background: var(--mint);
+    border-radius: 20px;
+    padding: 1rem;
 }
 
-.text-readable-dark {
-  color: #172033 !important;
+@media (max-width: 767px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
 }

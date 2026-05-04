@@ -1,0 +1,19 @@
+@model PaymentFormViewModel
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <h1 class="h4 mb-3">@ViewData["Title"]</h1>
+        <form method="post">
+            <input type="hidden" asp-for="Payment.Id" />
+            <div class="row g-3">
+                <div class="col-md-6"><label asp-for="Payment.LessonId" class="form-label"></label><select asp-for="Payment.LessonId" asp-items="Model.Lessons" class="form-select"></select></div>
+                <div class="col-md-3"><label asp-for="Payment.Amount" class="form-label"></label><input asp-for="Payment.Amount" class="form-control" /></div>
+                <div class="col-md-3"><label asp-for="Payment.PaymentDate" class="form-label"></label><input asp-for="Payment.PaymentDate" type="date" class="form-control" /></div>
+                <div class="col-md-3 form-check ms-3 mt-4"><input asp-for="Payment.IsPaid" class="form-check-input" /> <label asp-for="Payment.IsPaid" class="form-check-label"></label></div>
+                <div class="col-12"><label asp-for="Payment.Comment" class="form-label"></label><textarea asp-for="Payment.Comment" class="form-control" rows="3"></textarea></div>
+            </div>
+            <div class="mt-3"><button class="btn btn-primary" type="submit">Зберегти</button> <a class="btn btn-outline-secondary" asp-action="Index">Назад</a></div>
+        </form>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />

@@ -1,0 +1,12 @@
+@model LessonDto
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <h1 class="h4">Видалити заняття</h1>
+        <p>@Model.StartTime:g / @Model.StudentName / @Model.SubjectName</p>
+        <form method="post">
+            <input type="hidden" asp-for="Id" />
+            <button class="btn btn-danger" type="submit">Видалити</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Скасувати</a>
+        </form>
+    </div>
+</div>

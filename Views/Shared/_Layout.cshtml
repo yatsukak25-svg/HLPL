@@ -3,54 +3,53 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Кінопалац Рівне</title>
+    <title>@ViewData["Title"] - TutorFlow</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/HLPL_lab_1.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TutorFlow.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark site-navbar box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Кінопалац Рівне</a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+<body class="bg-soft">
+    <header class="mb-4">
+        <nav class="navbar navbar-expand-lg navbar-dark hero-nav shadow-sm">
+            <div class="container">
+                <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">TutorFlow</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Головна</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Schedule">Розклад</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Booking" asp-action="Index">Бронювання</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Конфіденційність</a>
-                        </li>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Головна</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Lessons" asp-action="Index">Заняття</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Homework" asp-action="Index">Домашні</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Payments" asp-action="Index">Оплати</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Students" asp-action="Index">Учні</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Subjects" asp-action="Index">Предмети</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Materials" asp-action="Index">Матеріали</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Index">Admin</a></li>
                     </ul>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div class="container pb-5">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer site-footer py-3">
-        <div class="container text-center">
-            <span>&copy; 2026 - Божена - Кінопалац Рівне</span>
-            <a class="ms-3 text-decoration-none" asp-area="" asp-controller="Home" asp-action="Privacy">Політика конфіденційності</a>
+    <footer class="footer border-top py-3 bg-white">
+        <div class="container d-flex justify-content-between small text-muted">
+            <span>&copy; 2026 TutorFlow</span>
+            <a asp-controller="Home" asp-action="Privacy">Політика конфіденційності</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+

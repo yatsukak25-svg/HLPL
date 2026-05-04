@@ -1,0 +1,2 @@
+@model PaymentDto
+<div class="card border-0 shadow-sm"><div class="card-body"><h1 class="h4">Видалити оплату</h1><p>@Model.StudentName / @Model.Amount грн</p><form method="post"><input type="hidden" asp-for="Id" /><button class="btn btn-danger" type="submit">Видалити</button> <a class="btn btn-outline-secondary" asp-action="Index">Скасувати</a></form></div></div>

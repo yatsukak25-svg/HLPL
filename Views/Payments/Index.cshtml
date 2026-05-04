@@ -1,0 +1,36 @@
+@model IReadOnlyList<PaymentDto>
+@{
+    ViewData["Title"] = "Оплати";
+    var unpaid = ViewBag.Unpaid as IReadOnlyList<PaymentDto> ?? [];
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Оплати</h1>
+    <a class="btn btn-primary" asp-action="Create">Додати оплату</a>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4"><div class="summary-bar"><div>Дохід за місяць</div><strong>@ViewBag.MonthIncome грн</strong></div></div>
+    <div class="col-md-8"><div class="summary-bar"><div>Борги учнів</div><strong>@string.Join(", ", unpaid.Select(x => $"{x.StudentName}: {x.Amount} грн"))</strong></div></div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <table class="table align-middle">
+            <thead><tr><th>Заняття</th><th>Учень</th><th>Сума</th><th>Статус</th><th>Дата</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.LessonSummary</td>
+                    <td>@item.StudentName</td>
+                    <td>@item.Amount грн</td>
+                    <td>@(item.IsPaid ? "Сплачено" : "Борг")</td>
+                    <td>@item.PaymentDate?.ToString("dd.MM.yyyy")</td>
+                    <td class="text-end"><a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Видалити</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

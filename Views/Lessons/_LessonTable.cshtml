@@ -1,0 +1,40 @@
+@model IReadOnlyList<LessonDto>
+
+<div class="table-responsive">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Учень</th>
+                <th>Предмет</th>
+                <th>Статус</th>
+                <th>Ціна</th>
+            </tr>
+        </thead>
+        <tbody>
+        @if (!Model.Any())
+        {
+            <tr><td colspan="5" class="text-center text-muted">Дані відсутні.</td></tr>
+        }
+        else
+        {
+            @foreach (var lesson in Model)
+            {
+                <tr>
+                    <td>
+                        <div>@lesson.StartTime.ToString("dd.MM.yyyy HH:mm")</div>
+                        @if (lesson.IsHoliday)
+                        {
+                            <div class="badge bg-warning-subtle text-dark mt-1">Свято: @lesson.HolidayName</div>
+                        }
+                    </td>
+                    <td>@lesson.StudentName</td>
+                    <td>@lesson.SubjectName</td>
+                    <td>@lesson.Status</td>
+                    <td>@lesson.Price грн</td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>

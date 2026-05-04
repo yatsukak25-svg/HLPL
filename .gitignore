@@ -1,11 +1,27 @@
-.vs/
-bin/
-obj/
-
+# .NET
+[Bb]in/
+[Oo]bj/
+[Tt]est[Rr]esults/
 *.user
 *.suo
+*.sln.docstates
 
-run-ok.log
-run-ok.err
-run-test.log
-run-test.err
+# Visual Studio
+.vs/
+.vscode/
+
+# Database
+app.db
+*.db-shm
+*.db-wal
+
+# Local .dotnet folder
+.dotnet/
+
+# Logs
+*.log
+*.err
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,17 @@
+@model AdminIndexViewModel
+@{
+    ViewData["Title"] = "Admin";
+}
+
+<h1 class="h3 mb-3">Панель адміністратора</h1>
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm"><div class="card-body"><h2 class="h5">Користувачі</h2><ul class="mb-0">@foreach (var user in Model.Users) { <li>@user</li> }</ul></div></div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm"><div class="card-body"><h2 class="h5">Усі заняття</h2><ul class="mb-0">@foreach (var lesson in Model.Lessons) { <li>@lesson.StartTime.ToString("dd.MM HH:mm") - @lesson.StudentName (@lesson.SubjectName)</li> }</ul></div></div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm"><div class="card-body"><h2 class="h5">Усі оплати</h2><ul class="mb-0">@foreach (var payment in Model.Payments) { <li>@payment.StudentName - @payment.Amount грн</li> }</ul></div></div>
+    </div>
+</div>

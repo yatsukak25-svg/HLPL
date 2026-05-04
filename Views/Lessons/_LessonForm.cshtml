@@ -1,0 +1,26 @@
+@model LessonFormViewModel
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <h1 class="h4 mb-3">@ViewData["Title"]</h1>
+        <form method="post">
+            <input type="hidden" asp-for="Lesson.Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row g-3">
+                <div class="col-md-4"><label asp-for="Lesson.TutorId" class="form-label"></label><select asp-for="Lesson.TutorId" asp-items="Model.Tutors" class="form-select"></select></div>
+                <div class="col-md-4"><label asp-for="Lesson.StudentId" class="form-label"></label><select asp-for="Lesson.StudentId" asp-items="Model.Students" class="form-select"></select></div>
+                <div class="col-md-4"><label asp-for="Lesson.SubjectId" class="form-label"></label><select asp-for="Lesson.SubjectId" asp-items="Model.Subjects" class="form-select"></select></div>
+                <div class="col-md-3"><label asp-for="Lesson.StartTime" class="form-label"></label><input asp-for="Lesson.StartTime" class="form-control" type="datetime-local" /></div>
+                <div class="col-md-3"><label asp-for="Lesson.EndTime" class="form-label"></label><input asp-for="Lesson.EndTime" class="form-control" type="datetime-local" /></div>
+                <div class="col-md-3"><label asp-for="Lesson.Price" class="form-label"></label><input asp-for="Lesson.Price" class="form-control" /></div>
+                <div class="col-md-3"><label asp-for="Lesson.Status" class="form-label"></label><select asp-for="Lesson.Status" asp-items="Html.GetEnumSelectList<LessonStatus>()" class="form-select"></select></div>
+                <div class="col-12"><label asp-for="Lesson.Notes" class="form-label"></label><textarea asp-for="Lesson.Notes" rows="3" class="form-control"></textarea></div>
+            </div>
+            <div class="mt-3">
+                <button class="btn btn-primary" type="submit">Зберегти</button>
+                <a class="btn btn-outline-secondary" asp-action="Index">Назад</a>
+            </div>
+        </form>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />

@@ -1,4 +1,4 @@
-namespace HLPL_lab_1.Models
+﻿namespace TutorFlow.Models
 {
     public class ErrorViewModel
     {
@@ -7,3 +7,4 @@ namespace HLPL_lab_1.Models
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
     }
 }
+

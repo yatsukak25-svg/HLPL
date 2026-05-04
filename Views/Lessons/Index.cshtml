@@ -1,0 +1,39 @@
+@model LessonIndexViewModel
+@{
+    ViewData["Title"] = "Заняття";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Заняття</h1>
+    <a class="btn btn-primary" asp-action="Create">Створити заняття</a>
+</div>
+
+<form method="get" class="summary-bar mb-3">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-2"><label class="form-label">Від</label><input name="fromDate" type="date" value="@Model.FromDate?.ToString("yyyy-MM-dd")" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">До</label><input name="toDate" type="date" value="@Model.ToDate?.ToString("yyyy-MM-dd")" class="form-control" /></div>
+        <div class="col-md-3"><label class="form-label">Учень</label><select name="studentId" asp-items="Model.Students" class="form-select"><option value="">Усі</option></select></div>
+        <div class="col-md-3"><label class="form-label">Предмет</label><select name="subjectId" asp-items="Model.Subjects" class="form-select"><option value="">Усі</option></select></div>
+        <div class="col-md-2"><label class="form-label">Статус</label><select name="status" asp-items="Html.GetEnumSelectList<LessonStatus>()" class="form-select"><option value="">Усі</option></select></div>
+        <div class="col-12"><button class="btn btn-primary" type="submit">Фільтрувати</button></div>
+    </div>
+</form>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <partial name="_LessonTable" model="Model.Lessons.Items" />
+        <div class="d-flex justify-content-between align-items-center">
+            <span>Сторінка @Model.Lessons.PageNumber з @Math.Max(Model.Lessons.TotalPages, 1)</span>
+            <div class="d-flex gap-2">
+                @if (Model.Lessons.PageNumber > 1)
+                {
+                    <a class="btn btn-outline-secondary btn-sm" asp-action="Index" asp-route-page="@(Model.Lessons.PageNumber - 1)" asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")" asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")" asp-route-studentId="@Model.StudentId" asp-route-subjectId="@Model.SubjectId" asp-route-status="@Model.Status">Назад</a>
+                }
+                @if (Model.Lessons.PageNumber < Model.Lessons.TotalPages)
+                {
+                    <a class="btn btn-outline-secondary btn-sm" asp-action="Index" asp-route-page="@(Model.Lessons.PageNumber + 1)" asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")" asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")" asp-route-studentId="@Model.StudentId" asp-route-subjectId="@Model.SubjectId" asp-route-status="@Model.Status">Далі</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
