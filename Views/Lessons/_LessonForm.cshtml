@@ -5,16 +5,62 @@
         <h1 class="h4 mb-3">@ViewData["Title"]</h1>
         <form method="post">
             <input type="hidden" asp-for="Lesson.Id" />
+            @if (User.IsInRole("Tutor") && !User.IsInRole("Admin"))
+            {
+                <input type="hidden" asp-for="Lesson.TutorId" />
+            }
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row g-3">
-                <div class="col-md-4"><label asp-for="Lesson.TutorId" class="form-label"></label><select asp-for="Lesson.TutorId" asp-items="Model.Tutors" class="form-select"></select></div>
-                <div class="col-md-4"><label asp-for="Lesson.StudentId" class="form-label"></label><select asp-for="Lesson.StudentId" asp-items="Model.Students" class="form-select"></select></div>
-                <div class="col-md-4"><label asp-for="Lesson.SubjectId" class="form-label"></label><select asp-for="Lesson.SubjectId" asp-items="Model.Subjects" class="form-select"></select></div>
-                <div class="col-md-3"><label asp-for="Lesson.StartTime" class="form-label"></label><input asp-for="Lesson.StartTime" class="form-control" type="datetime-local" /></div>
-                <div class="col-md-3"><label asp-for="Lesson.EndTime" class="form-label"></label><input asp-for="Lesson.EndTime" class="form-control" type="datetime-local" /></div>
-                <div class="col-md-3"><label asp-for="Lesson.Price" class="form-label"></label><input asp-for="Lesson.Price" class="form-control" /></div>
-                <div class="col-md-3"><label asp-for="Lesson.Status" class="form-label"></label><select asp-for="Lesson.Status" asp-items="Html.GetEnumSelectList<LessonStatus>()" class="form-select"></select></div>
-                <div class="col-12"><label asp-for="Lesson.Notes" class="form-label"></label><textarea asp-for="Lesson.Notes" rows="3" class="form-control"></textarea></div>
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="col-md-4">
+                        <label asp-for="Lesson.TutorId" class="form-label fw-medium"></label>
+                        <select asp-for="Lesson.TutorId" asp-items="Model.Tutors" class="form-select"></select>
+                    </div>
+                }
+                <div class="col-md-@(User.IsInRole("Admin") ? "4" : "6")">
+                    <label asp-for="Lesson.StudentId" class="form-label fw-medium"></label>
+                    <select asp-for="Lesson.StudentId" asp-items="Model.Students" class="form-select"></select>
+                </div>
+                <div class="col-md-@(User.IsInRole("Admin") ? "4" : "6")">
+                    <label asp-for="Lesson.SubjectId" class="form-label fw-medium"></label>
+                    <select asp-for="Lesson.SubjectId" asp-items="Model.Subjects" class="form-select"></select>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="Lesson.StartTime" class="form-label fw-medium">Дата та час початку</label>
+                    <input asp-for="Lesson.StartTime" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="Lesson.StartTime" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="Lesson.EndTime" class="form-label fw-medium">Дата та час завершення</label>
+                    <input asp-for="Lesson.EndTime" class="form-control" type="datetime-local" />
+                    <span asp-validation-for="Lesson.EndTime" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="Lesson.Price" class="form-label fw-medium"></label>
+                    <div class="input-group">
+                        <input asp-for="Lesson.Price" class="form-control" />
+                        <span class="input-group-text">грн</span>
+                    </div>
+                    <span asp-validation-for="Lesson.Price" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="Lesson.Status" class="form-label fw-medium"></label>
+                    <select asp-for="Lesson.Status" asp-items="Html.GetEnumSelectList<LessonStatus>()" class="form-select"></select>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Lesson.OnlineLink" class="form-label fw-medium"></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
+                        <input asp-for="Lesson.OnlineLink" class="form-control" placeholder="https://zoom.us/j/..." />
+                    </div>
+                    <span asp-validation-for="Lesson.OnlineLink" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Lesson.Notes" class="form-label fw-medium"></label>
+                    <textarea asp-for="Lesson.Notes" rows="3" class="form-control" placeholder="Додаткова інформація для учня..."></textarea>
+                    <span asp-validation-for="Lesson.Notes" class="text-danger small"></span>
+                </div>
             </div>
             <div class="mt-3">
                 <button class="btn btn-primary" type="submit">Зберегти</button>

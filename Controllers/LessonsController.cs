@@ -101,12 +101,24 @@ public class LessonsController : Controller
     [Authorize(Roles = "Tutor,Admin")]
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
-        return View(await BuildFormModelAsync(new LessonDto
+        var lessonDto = new LessonDto
         {
             StartTime = DateTime.Now.AddDays(1),
             EndTime = DateTime.Now.AddDays(1).AddHours(1),
             Status = LessonStatus.Planned
-        }, cancellationToken));
+        };
+
+        if (User.IsInRole("Tutor") && !User.IsInRole("Admin"))
+        {
+            var userId = _userManager.GetUserId(User);
+            var tutorProfile = await _context.TutorProfiles.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+            if (tutorProfile != null)
+            {
+                lessonDto.TutorId = tutorProfile.Id;
+            }
+        }
+
+        return View(await BuildFormModelAsync(lessonDto, cancellationToken));
     }
 
     [HttpPost]
@@ -114,6 +126,16 @@ public class LessonsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(LessonFormViewModel model, CancellationToken cancellationToken)
     {
+        if (User.IsInRole("Tutor") && !User.IsInRole("Admin"))
+        {
+            var userId = _userManager.GetUserId(User);
+            var tutorProfile = await _context.TutorProfiles.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+            if (tutorProfile != null)
+            {
+                model.Lesson.TutorId = tutorProfile.Id;
+            }
+        }
+
         if (!ModelState.IsValid)
         {
             return View(await BuildFormModelAsync(model.Lesson, cancellationToken));

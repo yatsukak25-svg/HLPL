@@ -32,6 +32,10 @@ public class LessonDto
     [Display(Name = "Нотатки")]
     public string? Notes { get; set; }
 
+    [Display(Name = "Посилання на урок")]
+    [Url(ErrorMessage = "Введіть коректне посилання")]
+    public string? OnlineLink { get; set; }
+
     public string TutorName { get; set; } = string.Empty;
 
     public string StudentName { get; set; } = string.Empty;

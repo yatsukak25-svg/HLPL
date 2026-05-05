@@ -87,7 +87,8 @@ public class LessonService : ILessonService
             EndTime = dto.EndTime,
             Price = AccountingCalculator.CalculateLessonTotal(dto.Price),
             Status = dto.Status,
-            Notes = dto.Notes
+            Notes = dto.Notes,
+            OnlineLink = dto.OnlineLink
         }, cancellationToken);
     }
 
@@ -105,6 +106,7 @@ public class LessonService : ILessonService
         entity.Price = AccountingCalculator.CalculateLessonTotal(dto.Price);
         entity.Status = dto.Status;
         entity.Notes = dto.Notes;
+        entity.OnlineLink = dto.OnlineLink;
 
         await _lessonRepository.UpdateAsync(entity, cancellationToken);
     }

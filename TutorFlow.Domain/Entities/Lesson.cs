@@ -24,6 +24,10 @@ public class Lesson : BaseEntity
     [StringLength(1000)]
     public string? Notes { get; set; }
 
+    [StringLength(500)]
+    [Display(Name = "Посилання на урок")]
+    public string? OnlineLink { get; set; }
+
     public TutorProfile? Tutor { get; set; }
 
     public StudentProfile? Student { get; set; }

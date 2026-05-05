@@ -1,4 +1,4 @@
-﻿using TutorFlow.Application.DTOs;
+using TutorFlow.Application.DTOs;
 using TutorFlow.Domain.Entities;
 
 namespace TutorFlow.Application.Mappings;
@@ -29,24 +29,22 @@ public static class EntityMappings
         };
     }
 
-    public static LessonDto ToDto(this Lesson entity)
+    public static LessonDto ToDto(this Lesson entity) => new()
     {
-        return new LessonDto
-        {
-            Id = entity.Id,
-            TutorId = entity.TutorId,
-            StudentId = entity.StudentId,
-            SubjectId = entity.SubjectId,
-            StartTime = entity.StartTime,
-            EndTime = entity.EndTime,
-            Price = entity.Price,
-            Status = entity.Status,
-            Notes = entity.Notes,
-            TutorName = entity.Tutor?.User?.FullName ?? string.Empty,
-            StudentName = entity.Student?.User?.FullName ?? string.Empty,
-            SubjectName = entity.Subject?.Name ?? string.Empty
-        };
-    }
+        Id = entity.Id,
+        TutorId = entity.TutorId,
+        StudentId = entity.StudentId,
+        SubjectId = entity.SubjectId,
+        StartTime = entity.StartTime,
+        EndTime = entity.EndTime,
+        Price = entity.Price,
+        Status = entity.Status,
+        Notes = entity.Notes,
+        OnlineLink = entity.OnlineLink,
+        TutorName = entity.Tutor?.User?.FullName ?? string.Empty,
+        StudentName = entity.Student?.User?.FullName ?? string.Empty,
+        SubjectName = entity.Subject?.Name ?? string.Empty
+    };
 
     public static HomeworkDto ToDto(this Homework entity)
     {
@@ -96,4 +94,3 @@ public static class EntityMappings
         };
     }
 }
-
