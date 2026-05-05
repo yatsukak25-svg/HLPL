@@ -88,7 +88,9 @@ public class RegisterModel : PageModel
             _context.TutorProfiles.Add(new TutorProfile
             {
                 UserId = user.Id,
-                Bio = Input.Notes
+                Bio = Input.Notes,
+                IsApproved = false, // Must be approved by Admin
+                TutorCode = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper() // Generate unique 8-char code
             });
         }
         else

@@ -19,10 +19,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<LearningMaterial> LearningMaterials => Set<LearningMaterial>();
     public DbSet<UserFavoriteMaterial> UserFavoriteMaterials => Set<UserFavoriteMaterial>();
+    public DbSet<TutorStudentRelation> TutorStudentRelations => Set<TutorStudentRelation>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<TutorStudentRelation>()
+            .HasIndex(x => new { x.TutorId, x.StudentId })
+            .IsUnique();
 
         builder.Entity<TutorProfile>()
             .HasOne(x => x.User)

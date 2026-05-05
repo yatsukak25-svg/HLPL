@@ -46,12 +46,22 @@ public class HomeController : Controller
             {
                 if (await _userManager.IsInRoleAsync(user, "Tutor"))
                 {
-                    var tutorId = await _context.TutorProfiles.Where(x => x.UserId == user.Id).Select(x => x.Id).FirstAsync(cancellationToken);
-                    model.TutorStats = await _dashboardService.GetTutorDashboardAsync(tutorId, cancellationToken);
-                    model.UpcomingLessons = (await _lessonService.GetTutorLessonsAsync(tutorId, cancellationToken))
-                        .Where(x => x.StartTime >= DateTime.Now)
-                        .Take(5)
-                        .ToList();
+                    var tutor = await _context.TutorProfiles.FirstOrDefaultAsync(x => x.UserId == user.Id, cancellationToken);
+                    if (tutor != null)
+                    {
+                        if (!tutor.IsApproved)
+                        {
+                            ViewBag.NotApproved = true;
+                        }
+                        ViewBag.TutorCode = tutor.TutorCode;
+
+                        var tutorId = tutor.Id;
+                        model.TutorStats = await _dashboardService.GetTutorDashboardAsync(tutorId, cancellationToken);
+                        model.UpcomingLessons = (await _lessonService.GetTutorLessonsAsync(tutorId, cancellationToken))
+                            .Where(x => x.StartTime >= DateTime.Now)
+                            .Take(5)
+                            .ToList();
+                    }
                 }
 
                 if (await _userManager.IsInRoleAsync(user, "Student"))

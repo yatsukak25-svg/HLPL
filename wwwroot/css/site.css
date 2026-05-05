@@ -37,6 +37,11 @@ body {
     flex-shrink: 0;
 }
 
+.pointer-events-none {
+    pointer-events: none;
+    user-select: none;
+}
+
 .bg-soft {
     background-color: var(--soft);
 }

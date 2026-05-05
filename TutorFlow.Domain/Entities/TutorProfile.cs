@@ -11,6 +11,11 @@ public class TutorProfile : BaseEntity
     [StringLength(1000)]
     public string? Bio { get; set; }
 
+    public bool IsApproved { get; set; } = false;
+
+    [StringLength(10)]
+    public string? TutorCode { get; set; }
+
     [Range(0, 60)]
     public int Experience { get; set; }
 
