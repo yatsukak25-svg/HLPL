@@ -3,7 +3,7 @@
 <div class="card border-0 shadow-sm">
     <div class="card-body">
         <h1 class="h4 mb-3">@ViewData["Title"]</h1>
-        <form method="post">
+        <form method="post" id="lessonForm">
             <input type="hidden" asp-for="Lesson.Id" />
             @if (User.IsInRole("Tutor") && !User.IsInRole("Admin"))
             {
@@ -28,15 +28,15 @@
                 </div>
                 <div class="col-md-3">
                     <label asp-for="Lesson.StartTime" class="form-label fw-medium">Дата та час початку</label>
-                    <input asp-for="Lesson.StartTime" class="form-control" type="datetime-local" step="60" 
+                    <input asp-for="Lesson.StartTime" id="StartTime" class="form-control" type="datetime-local" step="60" 
                            value="@Model.Lesson.StartTime.ToString("yyyy-MM-ddTHH:mm")" />
                     <span asp-validation-for="Lesson.StartTime" class="text-danger small"></span>
                 </div>
                 <div class="col-md-3">
                     <label asp-for="Lesson.EndTime" class="form-label fw-medium">Дата та час завершення</label>
-                    <input asp-for="Lesson.EndTime" class="form-control" type="datetime-local" step="60"
+                    <input asp-for="Lesson.EndTime" id="EndTime" class="form-control" type="datetime-local" step="60"
                            value="@Model.Lesson.EndTime.ToString("yyyy-MM-ddTHH:mm")" />
-                    <span asp-validation-for="Lesson.EndTime" class="text-danger small"></span>
+                    <span asp-validation-for="Lesson.EndTime" id="EndTimeError" class="text-danger small"></span>
                 </div>
                 <div class="col-md-3">
                     <label asp-for="Lesson.Price" class="form-label fw-medium"></label>
@@ -72,3 +72,37 @@
     </div>
 </div>
 <partial name="_ValidationScriptsPartial" />
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('lessonForm');
+        const startTimeInput = document.getElementById('StartTime');
+        const endTimeInput = document.getElementById('EndTime');
+        const endTimeError = document.getElementById('EndTimeError');
+
+        function validateDates() {
+            const start = new Date(startTimeInput.value);
+            const end = new Date(endTimeInput.value);
+
+            if (start >= end) {
+                endTimeError.textContent = 'Час завершення має бути пізніше часу початку';
+                endTimeInput.classList.add('is-invalid');
+                return false;
+            } else {
+                endTimeError.textContent = '';
+                endTimeInput.classList.remove('is-invalid');
+                return true;
+            }
+        }
+
+        startTimeInput.addEventListener('change', validateDates);
+        endTimeInput.addEventListener('change', validateDates);
+
+        form.addEventListener('submit', function (e) {
+            if (!validateDates()) {
+                e.preventDefault();
+                alert('Будь ласка, виправте помилки у формі перед збереженням.');
+            }
+        });
+    });
+</script>

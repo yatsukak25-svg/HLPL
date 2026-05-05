@@ -126,6 +126,11 @@ public class LessonsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(LessonFormViewModel model, CancellationToken cancellationToken)
     {
+        if (model.Lesson.EndTime <= model.Lesson.StartTime)
+        {
+            ModelState.AddModelError("Lesson.EndTime", "Час завершення має бути пізніше часу початку");
+        }
+
         if (User.IsInRole("Tutor") && !User.IsInRole("Admin"))
         {
             var userId = _userManager.GetUserId(User);
@@ -157,6 +162,11 @@ public class LessonsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(LessonFormViewModel model, CancellationToken cancellationToken)
     {
+        if (model.Lesson.EndTime <= model.Lesson.StartTime)
+        {
+            ModelState.AddModelError("Lesson.EndTime", "Час завершення має бути пізніше часу початку");
+        }
+
         if (!ModelState.IsValid)
         {
             return View(await BuildFormModelAsync(model.Lesson, cancellationToken));
