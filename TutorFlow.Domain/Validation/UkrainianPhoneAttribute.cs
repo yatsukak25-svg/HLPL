@@ -17,9 +17,7 @@ public sealed partial class UkrainianPhoneAttribute : ValidationAttribute
             return true;
         }
 
-        return value is string phone && UkrainianPhoneRegex().IsMatch(phone);
+        var regex = new Regex(@"^\+380\d{9}$");
+        return value is string phone && regex.IsMatch(phone);
     }
-
-    [GeneratedRegex(@"^\+380\d{9}$")]
-    private static partial Regex UkrainianPhoneRegex();
 }
