@@ -10,6 +10,7 @@ public interface ILessonService
         DateTime? toDate,
         int? studentId,
         int? subjectId,
+        int? tutorId,
         LessonStatus? status,
         int pageNumber,
         int pageSize,

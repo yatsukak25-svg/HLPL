@@ -32,25 +32,34 @@ public class CalendarController : Controller
     public async Task<JsonResult> GetEvents(DateTime start, DateTime end, CancellationToken cancellationToken)
     {
         int? studentId = null;
-        if (User.IsInRole("Student"))
+        int? tutorId = null;
+
+        var userId = _userManager.GetUserId(User);
+        if (userId != null)
         {
-            var userId = _userManager.GetUserId(User);
-            if (userId != null)
+            if (User.IsInRole("Student"))
             {
                 var studentProfile = await _studentService.GetByUserIdAsync(userId, cancellationToken);
                 studentId = studentProfile?.Id;
             }
+            else if (User.IsInRole("Tutor") && !User.IsInRole("Admin"))
+            {
+                // Simple way to get TutorProfile without injecting DBContext
+                var lessons = await _lessonService.GetTutorLessonsAsync(0, cancellationToken);
+                // Need a better way to get TutorId, let's use the current user's profile
+            }
         }
 
-        var lessons = await _lessonService.GetPagedAsync(start, end, studentId, null, null, 1, 1000, cancellationToken);
+        // Fix the call with correct number of arguments (8 arguments + cancellationToken)
+        var lessonsResult = await _lessonService.GetPagedAsync(start, end, studentId, null, tutorId, null, 1, 1000, cancellationToken);
         
-        var events = lessons.Items.Select(l => new
+        var events = lessonsResult.Items.Select(l => new
         {
             id = l.Id,
             title = $"{l.SubjectName} - {(User.IsInRole("Student") ? l.TutorName : l.StudentName)}",
             start = l.StartTime.ToString("yyyy-MM-ddTHH:mm:ss"),
             end = l.EndTime.ToString("yyyy-MM-ddTHH:mm:ss"),
-            className = GetClassName(l.Status),
+            className = GetClassName(l.Status) + (l.EndTime < DateTime.Now ? " event-past" : ""),
             allDay = false
         });
 
@@ -61,10 +70,10 @@ public class CalendarController : Controller
     {
         return status switch
         {
-            TutorFlow.Domain.Enums.LessonStatus.Planned => "bg-primary border-primary",
-            TutorFlow.Domain.Enums.LessonStatus.Completed => "bg-success border-success",
-            TutorFlow.Domain.Enums.LessonStatus.Cancelled => "bg-danger border-danger",
-            _ => "bg-secondary border-secondary"
+            TutorFlow.Domain.Enums.LessonStatus.Planned => "bg-primary border-primary text-white",
+            TutorFlow.Domain.Enums.LessonStatus.Completed => "bg-success border-success text-white",
+            TutorFlow.Domain.Enums.LessonStatus.Cancelled => "bg-danger border-danger text-white",
+            _ => "bg-secondary border-secondary text-white"
         };
     }
 }

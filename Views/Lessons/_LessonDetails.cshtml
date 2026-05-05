@@ -1,0 +1,44 @@
+@model LessonDto
+
+<div class="modal-header border-0 pb-0">
+    <h5 class="modal-title fw-bold">@Model.SubjectName</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="mb-4">
+        <span class="badge @(Model.Status == LessonStatus.Completed ? "bg-success" : (Model.Status == LessonStatus.Cancelled ? "bg-danger" : "bg-primary")) mb-2">
+            @Model.Status
+        </span>
+        <div class="text-muted small mb-1"><i class="bi bi-clock me-1"></i>Час проведення</div>
+        <div class="fw-semibold">@Model.StartTime.ToString("dd MMMM yyyy, HH:mm") - @Model.EndTime.ToString("HH:mm")</div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6">
+            <div class="text-muted small mb-1"><i class="bi bi-person me-1"></i>Репетитор</div>
+            <div class="fw-medium">@Model.TutorName</div>
+        </div>
+        <div class="col-6">
+            <div class="text-muted small mb-1"><i class="bi bi-cash me-1"></i>Вартість</div>
+            <div class="fw-medium">@Model.Price грн</div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Notes))
+    {
+        <div class="bg-light p-3 rounded-3 mb-0">
+            <div class="text-muted small mb-1">Нотатки від репетитора:</div>
+            <div class="small">@Model.Notes</div>
+        </div>
+    }
+</div>
+<div class="modal-footer border-0 pt-0">
+    @if (User.IsInRole("Tutor") || User.IsInRole("Admin"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary w-100 py-2 rounded-3">Редагувати</a>
+    }
+    else
+    {
+        <button type="button" class="btn btn-outline-secondary w-100 py-2 rounded-3" data-bs-dismiss="modal">Закрити</button>
+    }
+</div>

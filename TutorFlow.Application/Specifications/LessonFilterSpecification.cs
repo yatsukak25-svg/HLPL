@@ -10,6 +10,7 @@ public class LessonFilterSpecification : BaseSpecification<Lesson>
         DateTime? toDate,
         int? studentId,
         int? subjectId,
+        int? tutorId,
         LessonStatus? status,
         int? skip = null,
         int? take = null)
@@ -18,6 +19,7 @@ public class LessonFilterSpecification : BaseSpecification<Lesson>
             (!toDate.HasValue || lesson.StartTime.Date <= toDate.Value.Date) &&
             (!studentId.HasValue || lesson.StudentId == studentId.Value) &&
             (!subjectId.HasValue || lesson.SubjectId == subjectId.Value) &&
+            (!tutorId.HasValue || lesson.TutorId == tutorId.Value) &&
             (!status.HasValue || lesson.Status == status.Value))
     {
         AddInclude(x => x.Student!);

@@ -24,17 +24,19 @@ public class LessonService : ILessonService
         DateTime? toDate,
         int? studentId,
         int? subjectId,
+        int? tutorId,
         LessonStatus? status,
         int pageNumber,
         int pageSize,
         CancellationToken cancellationToken = default)
     {
-        var countSpec = new LessonFilterSpecification(fromDate, toDate, studentId, subjectId, status);
+        var countSpec = new LessonFilterSpecification(fromDate, toDate, studentId, subjectId, tutorId, status);
         var listSpec = new LessonFilterSpecification(
             fromDate,
             toDate,
             studentId,
             subjectId,
+            tutorId,
             status,
             (pageNumber - 1) * pageSize,
             pageSize);

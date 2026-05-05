@@ -45,6 +45,7 @@ public class LessonsController : Controller
         int page = 1,
         CancellationToken cancellationToken = default)
     {
+        int? tutorId = null;
         if (User.IsInRole("Student"))
         {
             var userId = _userManager.GetUserId(User);
@@ -54,8 +55,17 @@ public class LessonsController : Controller
                 studentId = studentProfile?.Id;
             }
         }
+        else if (User.IsInRole("Tutor") && !User.IsInRole("Admin"))
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                var tutorProfile = await _context.TutorProfiles.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+                tutorId = tutorProfile?.Id;
+            }
+        }
 
-        var lessons = await _lessonService.GetPagedAsync(fromDate, toDate, studentId, subjectId, status, page, 5, cancellationToken);
+        var lessons = await _lessonService.GetPagedAsync(fromDate, toDate, studentId, subjectId, tutorId, status, page, 5, cancellationToken);
         var model = new LessonIndexViewModel
         {
             Lessons = lessons,
@@ -69,6 +79,23 @@ public class LessonsController : Controller
         };
 
         return View(model);
+    }
+
+    [Authorize(Roles = "Tutor,Admin,Student")]
+    public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
+    {
+        var lesson = await _lessonService.GetByIdAsync(id, cancellationToken);
+        if (lesson is null) return NotFound();
+
+        // Security check: Student can only see their own lessons
+        if (User.IsInRole("Student"))
+        {
+            var userId = _userManager.GetUserId(User);
+            var studentProfile = await _studentService.GetByUserIdAsync(userId!, cancellationToken);
+            if (lesson.StudentId != studentProfile?.Id) return Forbid();
+        }
+
+        return PartialView("_LessonDetails", lesson);
     }
 
     [Authorize(Roles = "Tutor,Admin")]

@@ -27,7 +27,7 @@ public class AdminController : Controller
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
         var users = _userManager.Users.Select(x => $"{x.FullName} ({x.Email})").OrderBy(x => x).ToList();
-        var lessons = await _lessonService.GetPagedAsync(null, null, null, null, null, 1, 20, cancellationToken);
+        var lessons = await _lessonService.GetPagedAsync(null, null, null, null, null, null, 1, 20, cancellationToken);
         var payments = await _paymentService.GetAllAsync(cancellationToken);
 
         return View(new AdminIndexViewModel

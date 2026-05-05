@@ -9,12 +9,16 @@
                 <th>Предмет</th>
                 <th>Статус</th>
                 <th>Ціна</th>
+                @if (User.IsInRole("Tutor") || User.IsInRole("Admin"))
+                {
+                    <th class="text-end">Дії</th>
+                }
             </tr>
         </thead>
         <tbody>
         @if (!Model.Any())
         {
-            <tr><td colspan="5" class="text-center text-muted">Дані відсутні.</td></tr>
+            <tr><td colspan="@(User.IsInRole("Tutor") || User.IsInRole("Admin") ? 6 : 5)" class="text-center text-muted">Дані відсутні.</td></tr>
         }
         else
         {
@@ -30,8 +34,21 @@
                     </td>
                     <td>@lesson.StudentName</td>
                     <td>@lesson.SubjectName</td>
-                    <td>@lesson.Status</td>
+                    <td>
+                        <span class="badge @(lesson.Status == LessonStatus.Completed ? "bg-success" : (lesson.Status == LessonStatus.Cancelled ? "bg-danger" : "bg-primary"))">
+                            @lesson.Status
+                        </span>
+                    </td>
                     <td>@lesson.Price грн</td>
+                    @if (User.IsInRole("Tutor") || User.IsInRole("Admin"))
+                    {
+                        <td class="text-end">
+                            <div class="btn-group">
+                                <a asp-action="Edit" asp-route-id="@lesson.Id" class="btn btn-sm btn-outline-primary">Редагувати</a>
+                                <a asp-action="Delete" asp-route-id="@lesson.Id" class="btn btn-sm btn-outline-danger">Видалити</a>
+                            </div>
+                        </td>
+                    }
                 </tr>
             }
         }

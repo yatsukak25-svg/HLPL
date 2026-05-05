@@ -30,6 +30,15 @@
     </div>
 </div>
 
+<!-- Lesson Details Modal -->
+<div class="modal fade" id="lessonModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4" id="modalContent">
+            <!-- Content will be loaded here -->
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
@@ -38,6 +47,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
+            var lessonModal = new bootstrap.Modal(document.getElementById('lessonModal'));
+            var modalContent = document.getElementById('modalContent');
+
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 locale: 'uk',
@@ -54,7 +66,19 @@
                 },
                 events: '/Calendar/GetEvents',
                 eventClick: function(info) {
-                    window.location.href = '/Lessons/Edit/' + info.event.id;
+                    @if (User.IsInRole("Tutor") || User.IsInRole("Admin"))
+                    {
+                        @:window.location.href = '/Lessons/Edit/' + info.event.id;
+                    }
+                    else
+                    {
+                        @:fetch('/Lessons/Details/' + info.event.id)
+                        @:    .then(response => response.text())
+                        @:    .then(html => {
+                        @:        modalContent.innerHTML = html;
+                        @:        lessonModal.show();
+                        @:    });
+                    }
                 },
                 firstDay: 1,
                 height: 650,
@@ -68,8 +92,28 @@
     
     <style>
         #calendar { min-height: 600px; }
-        .fc-event { cursor: pointer; padding: 4px 6px; border-radius: 6px !important; margin: 1px 0; font-size: 0.85rem; }
-        .fc-toolbar-title { font-size: 1.4rem !important; font-weight: 700; color: #17304a; }
+        .fc-event { 
+            cursor: pointer; 
+            padding: 2px 4px !important; 
+            border-radius: 4px !important; 
+            border: none !important;
+            font-size: 0.8rem;
+            color: white !important; /* Force white text */
+        }
+        .fc-event-title { 
+            font-weight: 500 !important;
+            white-space: normal !important; /* Allow title to wrap if needed */
+        }
+        .event-past {
+            opacity: 0.6;
+            filter: grayscale(30%);
+            border-style: dashed !important;
+            border-width: 1px !important;
+        }
+        .event-past:hover {
+            opacity: 0.9;
+            filter: grayscale(0%);
+        }
         .fc-button-primary { background-color: #d66b36 !important; border-color: #d66b36 !important; text-transform: capitalize; }
         .fc-button-primary:hover { background-color: #b65220 !important; }
         .fc-button-active { background-color: #17304a !important; border-color: #17304a !important; }
