@@ -44,6 +44,23 @@ public class RegisterModel : PageModel
     {
         ReturnUrl = returnUrl ?? Url.Content("~/");
 
+        // Manual validation for Student Role and TutorCode
+        if (Input.Role == "Student")
+        {
+            if (string.IsNullOrWhiteSpace(Input.TutorCode))
+            {
+                ModelState.AddModelError("Input.TutorCode", "Для реєстрації учня необхідно вказати код репетитора.");
+            }
+            else
+            {
+                var tutorExists = await _context.TutorProfiles.AnyAsync(t => t.TutorCode == Input.TutorCode.Trim().ToUpper(), cancellationToken);
+                if (!tutorExists)
+                {
+                    ModelState.AddModelError("Input.TutorCode", "Вказаний код репетитора не знайдено в системі.");
+                }
+            }
+        }
+
         if (!ModelState.IsValid)
         {
             return Page();
@@ -167,7 +184,7 @@ public class RegisterModel : PageModel
         public int? Grade { get; set; }
 
         [StringLength(10)]
-        [Display(Name = "Код репетитора (необов'язково)")]
+        [Display(Name = "Код репетитора")]
         public string? TutorCode { get; set; }
 
         [StringLength(1000)]
