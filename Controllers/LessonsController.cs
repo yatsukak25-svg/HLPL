@@ -18,17 +18,20 @@ public class LessonsController : Controller
     private readonly IStudentService _studentService;
     private readonly ISubjectService _subjectService;
     private readonly ApplicationDbContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public LessonsController(
         ILessonService lessonService,
         IStudentService studentService,
         ISubjectService subjectService,
-        ApplicationDbContext context)
+        ApplicationDbContext context,
+        UserManager<ApplicationUser> userManager)
     {
         _lessonService = lessonService;
         _studentService = studentService;
         _subjectService = subjectService;
         _context = context;
+        _userManager = userManager;
     }
 
     [Authorize(Roles = "Tutor,Admin,Student")]
@@ -41,6 +44,16 @@ public class LessonsController : Controller
         int page = 1,
         CancellationToken cancellationToken = default)
     {
+        if (User.IsInRole("Student"))
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId != null)
+            {
+                var studentProfile = await _studentService.GetByUserIdAsync(userId, cancellationToken);
+                studentId = studentProfile?.Id;
+            }
+        }
+
         var lessons = await _lessonService.GetPagedAsync(fromDate, toDate, studentId, subjectId, status, page, 5, cancellationToken);
         var model = new LessonIndexViewModel
         {

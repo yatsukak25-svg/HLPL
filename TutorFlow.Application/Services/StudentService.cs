@@ -28,6 +28,13 @@ public class StudentService : IStudentService
         return student?.ToDto();
     }
 
+    public async Task<StudentDto?> GetByUserIdAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        var students = await _studentRepository.ListAsync(cancellationToken);
+        var student = students.FirstOrDefault(x => x.UserId == userId);
+        return student?.ToDto();
+    }
+
     public async Task CreateAsync(StudentDto dto, CancellationToken cancellationToken = default)
     {
         var userId = await _userManagementService.CreateStudentUserAsync(dto, cancellationToken);
