@@ -43,7 +43,9 @@ public static class SeedData
                 UserId = tutorUser.Id,
                 Bio = "Репетитор з математики та фізики.",
                 Experience = 7,
-                HourlyRate = 500m
+                HourlyRate = 500m,
+                IsApproved = true,
+                TutorCode = "MATH1234"
             });
         }
 
