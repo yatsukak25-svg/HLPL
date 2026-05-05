@@ -18,6 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Homework> Homeworks => Set<Homework>();
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<LearningMaterial> LearningMaterials => Set<LearningMaterial>();
+    public DbSet<UserFavoriteMaterial> UserFavoriteMaterials => Set<UserFavoriteMaterial>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -69,6 +70,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(x => x.Subject)
             .WithMany(x => x.LearningMaterials)
             .HasForeignKey(x => x.SubjectId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<UserFavoriteMaterial>()
+            .HasOne(x => x.User)
+            .WithMany()
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<UserFavoriteMaterial>()
+            .HasOne(x => x.LearningMaterial)
+            .WithMany()
+            .HasForeignKey(x => x.LearningMaterialId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<TutorProfile>().Navigation(x => x.User).AutoInclude();

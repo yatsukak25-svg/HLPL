@@ -1,34 +1,138 @@
-@model MaterialsIndexViewModel
+@model TutorFlow.Models.ViewModels.MaterialsIndexViewModel
 @{
-    ViewData["Title"] = "Матеріали";
+    ViewData["Title"] = "Навчальні матеріали";
 }
 
-<h1 class="h3 mb-3">Навчальні матеріали</h1>
-<div class="row g-3">
-@foreach (var item in Model.Materials)
-{
-    var selected = Model.SelectedMaterialIds.Contains(item.Id);
-    <div class="col-md-6">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="small text-muted">@item.SubjectName</div>
-                        <h2 class="h5">@item.Title</h2>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-book me-2"></i>@ViewData["Title"]</h2>
+        @if (User.IsInRole("Tutor") || User.IsInRole("Admin"))
+        {
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addMaterialForm">
+                <i class="bi bi-plus-circle me-1"></i>Додати матеріал
+            </button>
+        }
+    </div>
+
+    @if (User.IsInRole("Tutor") || User.IsInRole("Admin"))
+    {
+        <div class="collapse mb-4" id="addMaterialForm">
+            <div class="card card-body shadow-sm border-0">
+                <h5 class="card-title">Новий матеріал</h5>
+                <form asp-action="Create" method="post" enctype="multipart/form-data" class="row g-3">
+                    <div class="col-md-4">
+                        <label asp-for="NewMaterial!.Title" class="form-label">Назва</label>
+                        <input asp-for="NewMaterial!.Title" class="form-control" required />
                     </div>
-                    @if (selected)
-                    {
-                        <span class="badge bg-success">Обрано</span>
-                    }
-                </div>
-                <p>@item.Description</p>
-                <a href="@item.Url" target="_blank" class="btn btn-outline-dark btn-sm">Відкрити</a>
-                <form asp-action="ToggleSelected" method="post" class="d-inline">
-                    <input type="hidden" name="id" value="@item.Id" />
-                    <button class="btn btn-sm @(selected ? "btn-outline-danger" : "btn-outline-primary")" type="submit">@(selected ? "Прибрати" : "Обрати")</button>
+                    <div class="col-md-4">
+                        <label asp-for="NewMaterial!.SubjectId" class="form-label">Предмет</label>
+                        <select asp-for="NewMaterial!.SubjectId" asp-items="Model.Subjects" class="form-select" required>
+                            <option value="">Оберіть предмет...</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="NewMaterial!.Url" class="form-label">URL (опціонально)</label>
+                        <input asp-for="NewMaterial!.Url" class="form-control" />
+                    </div>
+                    <div class="col-md-8">
+                        <label asp-for="NewMaterial!.Description" class="form-label">Опис</label>
+                        <textarea asp-for="NewMaterial!.Description" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Файл (PDF, DOCX...)</label>
+                        <input type="file" name="file" class="form-control" />
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-success">Зберегти</button>
+                    </div>
                 </form>
             </div>
         </div>
+    }
+
+    <!-- Search and Filter -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="searchTerm" value="@Model.SearchTerm" class="form-control border-start-0" placeholder="Пошук за назвою або описом..." />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <select name="subjectId" asp-items="Model.Subjects" class="form-select">
+                        <option value="">Усі предмети</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-outline-primary w-100">Фільтрувати</button>
+                </div>
+            </form>
+        </div>
     </div>
-}
+
+    @if (!Model.Materials.Any())
+    {
+        <div class="text-center py-5">
+            <p class="text-muted">Матеріалів не знайдено.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var item in Model.Materials)
+            {
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm material-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-soft-primary text-primary">@item.SubjectName</span>
+                                <form asp-action="ToggleFavorite" asp-route-id="@item.Id" method="post">
+                                    <button type="submit" class="btn btn-link p-0 text-warning" title="@(item.IsFavorite ? "Прибрати з обраного" : "Додати в обране")">
+                                        <i class="bi @(item.IsFavorite ? "bi-star-fill" : "bi-star") h5"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            <h5 class="card-title">@item.Title</h5>
+                            <p class="card-text text-muted small mb-3">@item.Description</p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0 pb-3">
+                            <div class="d-flex gap-2">
+                                @if (!string.IsNullOrEmpty(item.Url))
+                                {
+                                    <a href="@item.Url" target="_blank" class="btn btn-sm btn-outline-info flex-grow-1">
+                                        <i class="bi bi-link-45deg me-1"></i>Відкрити посилання
+                                    </a>
+                                }
+                                @if (!string.IsNullOrEmpty(item.FilePath))
+                                {
+                                    <a href="@item.FilePath" download class="btn btn-sm btn-outline-secondary flex-grow-1">
+                                        <i class="bi bi-download me-1"></i>Скачати файл
+                                    </a>
+                                }
+                            </div>
+                            @if (User.IsInRole("Tutor") || User.IsInRole("Admin"))
+                            {
+                                <div class="mt-2 pt-2 border-top text-end">
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Ви впевнені?')">
+                                        <button type="submit" class="btn btn-link text-danger btn-sm p-0">Видалити</button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .bg-soft-primary { background-color: rgba(13, 110, 253, 0.1); }
+        .material-card { transition: transform 0.2s; }
+        .material-card:hover { transform: translateY(-5px); }
+    </style>
+}

@@ -16,9 +16,13 @@ public class LearningMaterialDto
     [Display(Name = "Опис")]
     public string? Description { get; set; }
 
-    [Required]
     [Display(Name = "URL")]
-    public string Url { get; set; } = string.Empty;
+    public string? Url { get; set; }
+
+    [Display(Name = "Файл")]
+    public string? FilePath { get; set; }
+
+    public bool IsFavorite { get; set; }
 
     public string SubjectName { get; set; } = string.Empty;
 }

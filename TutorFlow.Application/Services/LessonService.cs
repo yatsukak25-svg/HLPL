@@ -92,7 +92,8 @@ public class LessonService : ILessonService
     public async Task UpdateAsync(LessonDto dto, CancellationToken cancellationToken = default)
     {
         var entity = await _lessonRepository.GetByIdAsync(dto.Id, cancellationToken)
-            ?? throw new InvalidOperationException("Р—Р°РЅСЏС‚С‚СЏ РЅРµ Р·РЅР°Р№РґРµРЅРѕ.");
+            ?? throw new InvalidOperationException("Заняття не знайдено.");
+
 
         entity.TutorId = dto.TutorId;
         entity.StudentId = dto.StudentId;
@@ -109,7 +110,8 @@ public class LessonService : ILessonService
     public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
         var entity = await _lessonRepository.GetByIdAsync(id, cancellationToken)
-            ?? throw new InvalidOperationException("Р—Р°РЅСЏС‚С‚СЏ РЅРµ Р·РЅР°Р№РґРµРЅРѕ.");
+            ?? throw new InvalidOperationException("Заняття не знайдено.");
+
 
         await _lessonRepository.DeleteAsync(entity, cancellationToken);
     }

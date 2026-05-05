@@ -14,9 +14,11 @@ public class LearningMaterial : BaseEntity
     [StringLength(1000)]
     public string? Description { get; set; }
 
-    [Required]
     [StringLength(500)]
     public string Url { get; set; } = string.Empty;
+
+    [StringLength(500)]
+    public string? FilePath { get; set; }
 
     public Subject? Subject { get; set; }
 }

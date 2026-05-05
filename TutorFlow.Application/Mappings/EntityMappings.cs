@@ -91,6 +91,7 @@ public static class EntityMappings
             Title = entity.Title,
             Description = entity.Description,
             Url = entity.Url,
+            FilePath = entity.FilePath,
             SubjectName = entity.Subject?.Name ?? string.Empty
         };
     }
