@@ -95,12 +95,30 @@ public class RegisterModel : PageModel
         }
         else
         {
-            _context.StudentProfiles.Add(new StudentProfile
+            var studentProfile = new StudentProfile
             {
                 UserId = user.Id,
                 Grade = Input.Grade ?? 0,
                 Notes = Input.Notes
-            });
+            };
+            _context.StudentProfiles.Add(studentProfile);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            // Handle Tutor Code linking
+            if (!string.IsNullOrWhiteSpace(Input.TutorCode))
+            {
+                var tutor = await _context.TutorProfiles
+                    .FirstOrDefaultAsync(t => t.TutorCode == Input.TutorCode.Trim().ToUpper(), cancellationToken);
+                
+                if (tutor != null)
+                {
+                    _context.TutorStudentRelations.Add(new TutorStudentRelation
+                    {
+                        TutorId = tutor.Id,
+                        StudentId = studentProfile.Id
+                    });
+                }
+            }
         }
 
         await _context.SaveChangesAsync(cancellationToken);
@@ -146,6 +164,10 @@ public class RegisterModel : PageModel
         [Range(1, 12)]
         [Display(Name = "Клас (для учнів)")]
         public int? Grade { get; set; }
+
+        [StringLength(10)]
+        [Display(Name = "Код репетитора (необов'язково)")]
+        public string? TutorCode { get; set; }
 
         [StringLength(1000)]
         [Display(Name = "Про себе / Нотатки")]

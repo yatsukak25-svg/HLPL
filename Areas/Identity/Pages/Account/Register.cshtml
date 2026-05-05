@@ -68,16 +68,23 @@
                     </div>
 
                     <div id="studentFields" class="mt-3">
-                        <div class="mb-3">
-                            <label asp-for="Input.Grade" class="form-label"></label>
-                            <select asp-for="Input.Grade" class="form-select">
-                                <option value="">Оберіть клас...</option>
-                                @for (int i = 1; i <= 12; i++)
-                                {
-                                    <option value="@i">@i клас</option>
-                                }
-                            </select>
-                            <span asp-validation-for="Input.Grade" class="text-danger"></span>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Input.Grade" class="form-label"></label>
+                                <select asp-for="Input.Grade" class="form-select">
+                                    <option value="">Оберіть клас...</option>
+                                    @for (int i = 1; i <= 12; i++)
+                                    {
+                                        <option value="@i">@i клас</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Input.Grade" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.TutorCode" class="form-label"></label>
+                                <input asp-for="Input.TutorCode" class="form-control" placeholder="A1B2C3D4" />
+                                <span asp-validation-for="Input.TutorCode" class="text-danger"></span>
+                            </div>
                         </div>
                     </div>
 
