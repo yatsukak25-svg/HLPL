@@ -70,28 +70,41 @@ public class RegisterModel : PageModel
             return Page();
         }
 
-        var roleResult = await _userManager.AddToRoleAsync(user, "Student");
+        // Assign Role
+        string roleToAssign = Input.Role == "Tutor" ? "Tutor" : "Student";
+        var roleResult = await _userManager.AddToRoleAsync(user, roleToAssign);
         if (!roleResult.Succeeded)
         {
             foreach (var error in roleResult.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
-
             return Page();
         }
 
-        _context.StudentProfiles.Add(new StudentProfile
+        // Create Profile based on role
+        if (roleToAssign == "Tutor")
         {
-            UserId = user.Id,
-            Grade = Input.Grade,
-            Notes = Input.Notes
-        });
+            _context.TutorProfiles.Add(new TutorProfile
+            {
+                UserId = user.Id,
+                Bio = Input.Notes
+            });
+        }
+        else
+        {
+            _context.StudentProfiles.Add(new StudentProfile
+            {
+                UserId = user.Id,
+                Grade = Input.Grade ?? 0,
+                Notes = Input.Notes
+            });
+        }
 
         await _context.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
 
-        _logger.LogInformation("A new student account was created.");
+        _logger.LogInformation($"A new {roleToAssign} account was created.");
         await _signInManager.SignInAsync(user, isPersistent: false);
         return LocalRedirect(ReturnUrl);
     }
@@ -124,12 +137,16 @@ public class RegisterModel : PageModel
         [Display(Name = "Підтвердження пароля")]
         public string ConfirmPassword { get; set; } = string.Empty;
 
+        [Required]
+        [Display(Name = "Хто ви?")]
+        public string Role { get; set; } = "Student";
+
         [Range(1, 12)]
-        [Display(Name = "Клас")]
-        public int Grade { get; set; }
+        [Display(Name = "Клас (для учнів)")]
+        public int? Grade { get; set; }
 
         [StringLength(1000)]
-        [Display(Name = "Нотатки")]
+        [Display(Name = "Про себе / Нотатки")]
         public string? Notes { get; set; }
     }
 }
