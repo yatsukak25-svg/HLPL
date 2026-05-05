@@ -10,7 +10,7 @@ public class LessonDto
     [Display(Name = "Репетитор")]
     public int TutorId { get; set; }
 
-    [Display(Name = "Учень")]
+    [Display(Name = "Учень/Учениця")]
     public int StudentId { get; set; }
 
     [Display(Name = "Предмет")]
