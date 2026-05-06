@@ -2,25 +2,23 @@
 using TutorFlow.Application.Interfaces;
 using TutorFlow.Application.Mappings;
 using TutorFlow.Domain.Entities;
-using TutorFlow.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace TutorFlow.Application.Services;
 
 public class StudentService : IStudentService
 {
     private readonly IRepository<StudentProfile> _studentRepository;
+    private readonly IRepository<TutorStudentRelation> _relationRepository;
     private readonly IUserManagementService _userManagementService;
-    private readonly ApplicationDbContext _context;
 
     public StudentService(
         IRepository<StudentProfile> studentRepository, 
-        IUserManagementService userManagementService,
-        ApplicationDbContext context)
+        IRepository<TutorStudentRelation> relationRepository,
+        IUserManagementService userManagementService)
     {
         _studentRepository = studentRepository;
+        _relationRepository = relationRepository;
         _userManagementService = userManagementService;
-        _context = context;
     }
 
     public async Task<IReadOnlyList<StudentDto>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -37,70 +35,60 @@ public class StudentService : IStudentService
 
     public async Task<StudentDto?> GetByUserIdAsync(string userId, CancellationToken cancellationToken = default)
     {
-        var student = await _context.StudentProfiles
-            .Include(x => x.User)
-            .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+        var students = await _studentRepository.ListAsync(cancellationToken);
+        var student = students.FirstOrDefault(x => x.UserId == userId);
         return student?.ToDto();
     }
 
     public async Task<IReadOnlyList<StudentDto>> GetTutorStudentsAsync(int tutorId, CancellationToken cancellationToken = default)
     {
-        var students = await _context.TutorStudentRelations
+        var relations = await _relationRepository.ListAsync(cancellationToken);
+        var students = relations
             .Where(x => x.TutorId == tutorId)
             .Select(x => x.Student!)
-            .Include(x => x.User)
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         return students.Select(x => x.ToDto()).OrderBy(x => x.FullName).ToList();
     }
 
     public async Task<StudentDto?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
-        if (user == null) return null;
-
-        var student = await _context.StudentProfiles
-            .Include(x => x.User)
-            .FirstOrDefaultAsync(s => s.UserId == user.Id, cancellationToken);
-
+        var students = await _studentRepository.ListAsync(cancellationToken);
+        var student = students.FirstOrDefault(s => s.User?.Email == email);
         return student?.ToDto();
     }
 
     public async Task<IEnumerable<StudentDto>> GetByFullNameAsync(string fullName, CancellationToken cancellationToken = default)
     {
-        var students = await _context.StudentProfiles
-            .Include(x => x.User)
-            .Where(x => x.User!.FullName.ToLower().Contains(fullName.ToLower()))
-            .ToListAsync(cancellationToken);
-
-        return students.Select(x => x.ToDto());
+        var students = await _studentRepository.ListAsync(cancellationToken);
+        return students
+            .Where(x => x.User!.FullName.Contains(fullName, StringComparison.OrdinalIgnoreCase))
+            .Select(x => x.ToDto());
     }
 
     public async Task LinkToTutorAsync(int studentId, int tutorId, CancellationToken cancellationToken = default)
     {
-        var exists = await _context.TutorStudentRelations
-            .AnyAsync(x => x.TutorId == tutorId && x.StudentId == studentId, cancellationToken);
+        var relations = await _relationRepository.ListAsync(cancellationToken);
+        var exists = relations.Any(x => x.TutorId == tutorId && x.StudentId == studentId);
 
         if (!exists)
         {
-            _context.TutorStudentRelations.Add(new TutorStudentRelation
+            await _relationRepository.AddAsync(new TutorStudentRelation
             {
                 TutorId = tutorId,
                 StudentId = studentId
-            });
-            await _context.SaveChangesAsync(cancellationToken);
+            }, cancellationToken);
         }
     }
 
     public async Task UnlinkFromTutorAsync(int studentId, int tutorId, CancellationToken cancellationToken = default)
     {
-        var relation = await _context.TutorStudentRelations
-            .FirstOrDefaultAsync(x => x.TutorId == tutorId && x.StudentId == studentId, cancellationToken);
+        var relations = await _relationRepository.ListAsync(cancellationToken);
+        var relation = relations.FirstOrDefault(x => x.TutorId == tutorId && x.StudentId == studentId);
 
         if (relation != null)
         {
-            _context.TutorStudentRelations.Remove(relation);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _relationRepository.DeleteAsync(relation, cancellationToken);
         }
     }
 
