@@ -1,32 +1,113 @@
 @model IReadOnlyList<StudentDto>
 @{
-    ViewData["Title"] = "Учні";
+    ViewData["Title"] = User.IsInRole("Admin") ? "Усі учні" : "Мої учні";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3 mb-0">Учні</h1>
-    <a class="btn btn-primary" asp-action="Create">Додати учня</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">@ViewData["Title"]</h1>
+        <p class="text-muted small mb-0">Керування списком ваших підопічних</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addExistingModal">
+            <i class="bi bi-person-plus me-1"></i>Додати існуючого
+        </button>
+        <a class="btn btn-primary" asp-action="Create">
+            <i class="bi bi-plus-lg me-1"></i>Новий учень
+        </a>
+    </div>
 </div>
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body">
-        <table class="table align-middle">
-            <thead><tr><th>ПІБ</th><th>Email</th><th>Телефон</th><th>Клас</th><th></th></tr></thead>
-            <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.FullName</td>
-                    <td>@item.Email</td>
-                    <td>@item.PhoneNumber</td>
-                    <td>@item.Grade</td>
-                    <td class="text-end">
-                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Редагувати</a>
-                        <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success border-0 shadow-sm mb-4">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger border-0 shadow-sm mb-4">@TempData["Error"]</div>
+}
+
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">ПІБ</th>
+                        <th>Контакти</th>
+                        <th>Клас</th>
+                        <th class="text-end pe-4">Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            <i class="bi bi-people fs-1 d-block mb-2"></i>
+                            У вас ще немає доданих учнів.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-dark">@item.FullName</div>
+                                <div class="small text-muted">ID: #@item.Id</div>
+                            </td>
+                            <td>
+                                <div class="small"><i class="bi bi-envelope me-1"></i>@item.Email</div>
+                                @if (!string.IsNullOrEmpty(item.PhoneNumber))
+                                {
+                                    <div class="small text-muted"><i class="bi bi-telephone me-1"></i>@item.PhoneNumber</div>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge bg-primary-subtle text-primary rounded-pill px-3">@item.Grade клас</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group">
+                                    <a class="btn btn-sm btn-light border" asp-action="Edit" asp-route-id="@item.Id" title="Редагувати">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-light border text-danger" asp-action="Delete" asp-route-id="@item.Id" title="Видалити">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Existing Student Modal -->
+<div class="modal fade" id="addExistingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <form asp-action="AddByFullName" method="post">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Додати існуючого учня</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small mb-4">Введіть повне ім'я учня, щоб знайти його в системі та додати до свого списку.</p>
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label fw-medium">ПІБ учня</label>
+                        <input type="text" name="fullName" id="fullName" class="form-control form-control-lg" placeholder="Наприклад: Тарас Шевченко" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light w-100 mb-2" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="submit" class="btn btn-primary w-100">Знайти та додати</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
